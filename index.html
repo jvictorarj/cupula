@@ -2123,7 +2123,7 @@ function deltaI(kind, a, b, good = 'up'){
     else if (kind === 'x') tx = ar + nf2.format(Math.abs(d)) + 'x';
     else if (kind === 'pct' && a > 0) tx = ar + nf1.format(Math.abs(b / a - 1) * 100) + '%';
     else tx = ar + nf0.format(Math.abs(Math.round(d)));
-    return {t: tx + ' vs. ano anterior', c: d === 0 ? '' : ((d > 0) === (good === 'up') ? 'pos' : 'neg')};
+    return {t: tx, c: d === 0 ? '' : ((d > 0) === (good === 'up') ? 'pos' : 'neg')};
   }
 
 function kpiCard(label, val, sub, cls, vcls, note){ return `<div class="kpi4"><small>${label}</small><b class="${vcls || ''}">${val}${note ? ` <em class="sm">${note}</em>` : ''}</b><span class="${cls || ''}">${sub}</span></div>`; }
