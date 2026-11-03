@@ -2087,7 +2087,7 @@ function blockCharts(n){
     case 7: C.push(yCard('Capital Circulante Líquido (CCL)', 'ccl', {neg: 1}), yCard('Necessidade de Capital de Giro (NCG)', 'ncg', {good: 'down'}), yCard('Saldo da Tesouraria', 'tes', {neg: 1})); break;
     case 8: G.push(one('Prazo médio de recebimento (dias)', 'pmr'), one('Ciclo operacional (dias)', 'cop'), one('Ciclo financeiro (dias)', 'cfin')); break;
     case 9: G.push(one('Fluxo de caixa operacional (FCO)', 'fco'), one('Fluxo de caixa livre (FCL)', 'fcl'), one('Conversão de caixa (FCO/EBITDA)', 'conv')); break;
-    case 10: C.push(yCard('Dívida Bruta', 'db', {kind: 'pct', good: 'down'})); G.push(one('Cobertura de juros pelo EBITDA', 'cj_ebitda'), one('Endividamento geral', 'endiv')); break;
+    case 10: C.push(yCard('Dívida Líquida', 'dl', {kind: 'abs', good: 'down', neg: 1}), yCard('Composição do Endividamento', 'comp', {kind: 'pp', good: 'down'})); G.push(one('Cobertura de juros pelo EBITDA', 'cj_ebitda'), one('Endividamento geral', 'endiv')); break;
     case 11: G.push(one('Giro do ativo', 'giro'), one('Alavancagem', 'alav'), one('ROE', 'roe'), one('ROCE', 'roce')); break;
     case 12: G.push(one('Imobilização do PL', 'imob_pl'), one('Caixa / ativo total', 'cx_ativo'), one('Giro do imobilizado', 'giro_imob')); break;
     case 13: G.push(one('CAPEX / D&A', 'capex_da'), one('CAPEX / receita', 'capex_rec'), one('EBITDA − CAPEX', 'ebitda_capex')); break;
@@ -2097,8 +2097,8 @@ function blockCharts(n){
       break;
     case 15: G.push(mkBars('Lucro, dividendos e outras mudanças no PL', ['Lucro líq.', 'Dividendos', 'Outros no PL'], [x => x.ll, x => -x.divid, 'outros_pl'], 'num', {w: MW, h: 200}), one('Crescimento sustentável (ROE × retenção)', 'sgr'), one('Outros movimentos no PL', 'outros_pl')); break;
     case 16:
-      C.push(yCard('Spread do capital (ROIC − WACC)', 'spread', {kind: 'pp', neg: 1}), yCard('EVA (valor criado)', 'eva', {neg: 1}));
-      G.push(mkBars('Retorno x custo do dinheiro', ['Ke', 'Kd líq.', 'WACC', 'ROIC líq.'], ['ke', 'kd_at', 'wacc', 'roic_at'], 'pct', {w: MW, h: 200}));
+      C.push(yCard('Custo do Capital Próprio (Ke)', 'ke', {kind: 'pp', good: 'down'}), yCard('WACC', 'wacc', {kind: 'pp', good: 'down'}), yCard('Capital Investido', 'capinv', {kind: 'pct', neg: 1}));
+      G.push(mkBars('Retorno x custo do dinheiro', ['Ke', 'Kd líq.', 'WACC', 'ROIC líq.'], ['ke', 'kd_at', 'wacc', 'roic_at'], 'pct', {w: MW, h: 200}), one('EVA (valor criado)', 'eva'));
       break;
   }
   return {cards: C.filter(Boolean), charts: G.filter(Boolean), mix};
