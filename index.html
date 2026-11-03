@@ -2098,7 +2098,7 @@ function blockCharts(n){
     case 15: G.push(mkBars('Lucro, dividendos e outras mudanças no PL', ['Lucro líq.', 'Dividendos', 'Outros no PL'], [x => x.ll, x => -x.divid, 'outros_pl'], 'num', {w: MW, h: 200}), one('Crescimento sustentável (ROE × retenção)', 'sgr'), one('Outros movimentos no PL', 'outros_pl')); break;
     case 16:
       C.push(yCard('Custo do Capital Próprio (Ke)', 'ke', {kind: 'pp', good: 'down'}), yCard('WACC', 'wacc', {kind: 'pp', good: 'down'}), yCard('Capital Investido', 'capinv', {kind: 'pct', neg: 1}));
-      G.push(mkBars('Retorno x custo do dinheiro', ['Ke', 'Kd líq.', 'WACC', 'ROIC líq.'], ['ke', 'kd_at', 'wacc', 'roic_at'], 'pct', {w: MW, h: 200}), one('EVA (valor criado)', 'eva'));
+      G.push(mini('Custo da dívida, EVA e retorno', [pg('kd_at', 'Kd líq.'), pg('eva', 'EVA', 'num'), pg('roic_at', 'ROIC líq.')], {wide: true}));
       break;
   }
   return {cards: C.filter(Boolean), charts: G.filter(Boolean), mix};
