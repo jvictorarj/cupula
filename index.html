@@ -284,6 +284,10 @@ a.cp-tool:hover .go .cp-ico{transform:translateX(3px)}
 #fluxe-root .tg .i.sp{visibility:hidden}
 #fluxe-root tr.top .tg .i{background:rgba(255,255,255,.2);color:#fff}
 #fluxe-root .stopts{margin:0 0 10px;font-size:13px;color:var(--muted)}
+#fluxe-root table.st td.cat{background:var(--surface);text-align:center;font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--blue);border-left:1px solid var(--line);border-bottom:3px solid #fff;width:104px;min-width:104px;white-space:normal}
+#fluxe-root table.st th.cat{width:104px}
+#fluxe-root table.st tr.catsec{display:none}
+#fluxe-root table.st td.catband{padding:0}
 #fluxe-root table.st tr.sec td{background:var(--surface);font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;padding:9px 8px}
 #fluxe-root table.st tr.calc td{background:#F3F0EA;font-weight:700;color:var(--navy)}
 #fluxe-root table.st tr.top td{background:var(--navy);color:#fff;font-weight:800;letter-spacing:.03em}
@@ -440,6 +444,9 @@ a.cp-tool:hover .go .cp-ico{transform:translateX(3px)}
   #fluxe-root .dash3 .quad{grid-template-columns:1fr}
   #fluxe-root .tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
   #fluxe-root table.st{min-width:560px}
+  #fluxe-root table.st td.cat,#fluxe-root table.st th.cat{display:none}
+  #fluxe-root table.st tr.catsec{display:table-row}
+  #fluxe-root table.st td.catband{display:none}
   #fluxe-root table.st th{position:static}
   #fluxe-root table.st th:first-child{position:sticky}
   #fluxe-root table.st td.lbl,#fluxe-root table.st th:first-child{position:sticky;left:0;z-index:1;background:#fff;width:150px;min-width:150px;max-width:150px;box-shadow:2px 0 0 #EFEBE5}
@@ -1437,31 +1444,30 @@ function applyState(o){
 
 /* ------------------------------------------------------------------ demonstrativos: definição das linhas */
 const DRE_ROWS = [
-  {sec:'CATEGORIA OPERACIONAL'},
-  {k:'rb', l:'RECEITA BRUTA', h:'Total vendido antes de impostos e devoluções.', top:1, tone:'g'},
-  {k:'imp', l:'Impostos sobre as Vendas', h:'Positivo. ICMS, PIS, COFINS, ISS. Se a receita já está líquida, deixe 0.'},
-  {k:'dev', l:'Devoluções', h:'Positivo. Inclui abatimentos e cancelamentos.'},
+  {k:'rb', l:'RECEITA BRUTA', h:'Total vendido antes de impostos e devoluções.', top:1, tone:'b'},
+  {sec:'FISCAL', cat:1},
+  {k:'imp', l:'(−) Tributos sobre Vendas', h:'Positivo. ICMS, PIS, COFINS, ISS. Se a receita já está líquida, deixe 0.'},
+  {k:'dev', l:'(−) Devoluções, Cancelamentos e Abatimentos', h:'Positivo.'},
   {c:'rl', l:'RECEITA LÍQUIDA', f:s => s.rl, top:1, tone:'b'},
-  {k:'cmv', l:'CMV / CPV / CSP', h:'Custo do que foi vendido (mercadoria, produto ou serviço). Positivo.'},
-  {c:'lb', l:'LUCRO BRUTO', f:s => s.lb, top:1, tone:'b'},
-  {k:'dv', l:'Despesas com Vendas', h:'Comerciais, marketing, comissões. Positivo.'},
-  {k:'ga', l:'Despesas Administrativas', h:'Gerais e administrativas. Positivo.'},
-  {k:'od', l:'Outras Despesas Operacionais', h:'Perdas, baixas, provisões e perdas de crédito ligadas à operação. Positivo.'},
-  {k:'orr', l:'Outras Receitas Operacionais', h:'Ganhos pontuais da operação (venda de imobilizado, de atletas, reversões). Positivo.'},
-  {c:'ebit', l:'LUCRO OPERACIONAL', f:s => s.ebit, top:1, tone:'b', h:'Subtotal exigido pelo novo modelo: resultado da categoria operacional. Na leitura tradicional, é o EBIT.'},
-  {sec:'CATEGORIA DE INVESTIMENTO'},
-  {k:'eqp', l:'Equivalência e Outros Resultados de Investimentos', h:'Equivalência patrimonial, dividendos recebidos e ganhos ou perdas na venda de participações. Positivo se ganho; negativo se perda.'},
-  {k:'rf', l:'Receitas de Aplicações Financeiras', h:'Rendimentos de caixa e aplicações financeiras, juros ativos. Positivo.'},
-  {c:'lapf', l:'LUCRO ANTES DO FINANCIAMENTO E DOS TRIBUTOS SOBRE O LUCRO', f:s => s.lapf, top:1, tone:'b', h:'Subtotal exigido pelo novo modelo: lucro operacional + categoria de investimento.'},
-  {sec:'CATEGORIA DE FINANCIAMENTO'},
-  {k:'df', l:'Despesas Financeiras', h:'Juros de empréstimos, debêntures e arrendamentos, e demais encargos de captação. Positivo. A variação cambial vai na categoria do item que a originou.'},
-  {c:'lair', l:'LUCRO ANTES DOS TRIBUTOS SOBRE O LUCRO', f:s => s.lair, top:1, tone:'b', h:'Antigo LAIR.'},
-  {sec:'TRIBUTOS SOBRE O LUCRO'},
-  {k:'ir', l:'IR / CSLL', h:'Total do período (corrente + diferido). Positivo se despesa; negativo se crédito.'},
-  {c:'ll', l:'LUCRO DO PERÍODO', f:s => s.ll, top:1, tone:'b', h:'Resultado final, depois de todas as categorias (e das operações descontinuadas, que esta ferramenta não separa).'},
+  {sec:'OPERACIONAL', cat:1},
+  {k:'cmv', l:'(−) CMV / CPV / CSP', h:'Custo do que foi vendido (mercadoria, produto ou serviço). Positivo.'},
+  {k:'dv', l:'(−) Despesas com Vendas e Marketing', h:'Comerciais, marketing, comissões. Positivo.'},
+  {k:'ga', l:'(−) Despesas Administrativas', h:'Gerais e administrativas, inclusive pessoal. Positivo.'},
+  {k:'od', l:'(−) Outras Despesas Operacionais', h:'Perdas, baixas, impairment, provisões e perdas de crédito ligadas à operação. Positivo.'},
+  {k:'orr', l:'(+) Outras Receitas Operacionais', h:'Ganhos pontuais da operação (venda de imobilizado, de atletas, reversões). Positivo.'},
+  {c:'ebit', l:'LUCRO OPERACIONAL', f:s => s.ebit, top:1, tone:'b', h:'Subtotal exigido pelo novo modelo: resultado da categoria operacional.'},
+  {sec:'INVESTIMENTOS', cat:1},
+  {k:'eqp', l:'(+/−) Equivalência e Outros Resultados de Investimentos', h:'Equivalência patrimonial de coligadas, controladas e joint ventures, dividendos recebidos e ganhos ou perdas na venda de participações. Positivo se ganho; negativo se perda.'},
+  {k:'rf', l:'(+) Receitas de Aplicações Financeiras', h:'Rendimentos de caixa e equivalentes e de aplicações financeiras. Positivo.'},
+  {c:'lapf', l:'LUCRO ANTES DE FINANCIAMENTO E TRIBUTOS', f:s => s.lapf, top:1, tone:'b', h:'Subtotal exigido pelo novo modelo: lucro operacional + categoria de investimentos.'},
+  {sec:'FINANCIAMENTOS', cat:1},
+  {k:'df', l:'(−) Despesas de Juros e Financiamentos', h:'Juros de empréstimos, debêntures e arrendamentos, e demais encargos de captação (variação cambial e provisões financeiras, se houver). Positivo.'},
+  {c:'lair', l:'RESULTADO ANTES DO IRPJ E CSLL', f:s => s.lair, top:1, tone:'b', h:'Antigo LAIR.'},
+  {sec:'TRIBUTOS', cat:1},
+  {k:'ir', l:'(−) IRPJ e CSLL', h:'Total do período (corrente + diferido). Positivo se despesa; negativo se crédito.'},
+  {c:'ll', l:'LUCRO LÍQUIDO', f:s => s.ll, top:1, h:'Resultado final, depois de todas as categorias (e das operações descontinuadas, que esta ferramenta não separa).'},
   {sec:'INFORMAÇÕES COMPLEMENTARES (NOTAS EXPLICATIVAS)'},
   {k:'da', l:'Depreciação e Amortização', h:'Já está dentro dos custos e despesas operacionais acima: soma-se ao lucro operacional para chegar ao EBITDA. Positivo. Se ela só aparece na DFC, deixe em branco aqui e preencha na DFC: a ferramenta usa a da DFC.', ph:'da_dfc'},
-  {c:'ebitda', l:'EBITDA (medida gerencial)', f:s => s.ebitda, top:1, tone:'b', h:'Lucro operacional + D&A. Não é subtotal da DRE no novo modelo: é uma medida de desempenho definida pela administração, que deve ser conciliada com o lucro operacional nas notas.'}
 ];
 const BP_ROWS = [
   {c:'ativo', l:'ATIVO', f:s => s.ativo, top:1, chk:1},
@@ -1823,20 +1829,24 @@ function lblCell(r){
   return `<td class="lbl"><button type="button" class="tg" ${r.h ? '' : 'tabindex="-1" style="cursor:default"'}>${ic}<span>${esc(r.l)}</span></button>${hint}</td>`;
 }
 function buildStatement(panel, rows, intro, nextLabel, nextTab, opts = {}){
-  let h = `<div id="top-${panel}"></div>` + intro + `<div class="strow"><label class="stopts"><input type="checkbox" class="stAll"> Mostrar todas as explicações</label><button class="btn light sm" type="button" data-clear="${panel}">${{dre: 'Limpar DRE', bp: 'Limpar balanço', dfc: 'Limpar DFC'}[panel]}</button></div>` + '<p class="swipe">Deslize a tabela para o lado para ver a variação →</p><div class="tscroll"><table class="st' + (opts.indent ? ' indent' : '') + '"><thead><tr><th>Conta</th><th class="yh0"></th><th class="yh1"></th><th class="col-var">Var. %</th><th class="col-var">Var.</th></tr></thead><tbody>';
+  let h = `<div id="top-${panel}"></div>` + intro + `<div class="strow"><label class="stopts"><input type="checkbox" class="stAll"> Mostrar todas as explicações</label><button class="btn light sm" type="button" data-clear="${panel}">${{dre: 'Limpar DRE', bp: 'Limpar balanço', dfc: 'Limpar DFC'}[panel]}</button></div>` + '<p class="swipe">Deslize a tabela para o lado para ver a variação →</p><div class="tscroll"><table class="st' + (opts.indent ? ' indent' : '') + '"><thead><tr><th>Conta</th><th class="yh0"></th><th class="yh1"></th><th class="col-var">Var. %</th><th class="col-var">Var.</th>' + (rows.some(r => r.cat) ? '<th class="cat"></th>' : '') + '</tr></thead><tbody>';
+  const catOn = rows.some(r => r.cat), nc = catOn ? 6 : 5;
+  const catSpan = {}; if (catOn) { let cur = null; rows.forEach(r => { if (r.sec) { cur = r.cat ? r : null; if (cur) cur.n = 0; } else if (r.top || r.c) cur = null; else if (cur) cur.n++; }); }
+  let catPend = null;
   rows.forEach(r => {
-    if (r.sec) { h += `<tr class="sec"><td colspan="5">${esc(r.sec)}</td></tr>`; return; }
+    if (r.sec) { if (r.cat) { catPend = r; h += `<tr class="sec catsec"><td colspan="${nc}">${esc(r.sec)}</td></tr>`; } else { catPend = null; h += `<tr class="sec"><td colspan="${nc}">${esc(r.sec)}</td></tr>`; } return; }
+    const catTd = catOn ? ((r.top || r.c) ? '<td class="catband"></td>' : (catPend ? (() => { const x = `<td class="cat" rowspan="${catPend.n}">${esc(catPend.sec)}</td>`; catPend = null; return x; })() : '')) : '';
     const tone = r.top && r.tone ? ' t' + r.tone : '';
     const cls = r.c ? ['calc', r.top ? 'top' + tone : '', r.grp ? 'grp ' + r.grp : '', r.chk && !r.top ? 'chk' : '', r.subrow || r.sub ? 'subrow' : ''].filter(Boolean).join(' ') : (r.top ? 'top' + tone : r.hl ? 'hl' : '');
     const lbl = lblCell(r);
     if (r.c) {
-      h += `<tr class="${cls}" data-c="${r.c}">${lbl}<td class="v" data-cv="${r.c}" data-y="0"></td><td class="v" data-cv="${r.c}" data-y="1"></td><td class="v col-var" data-cp="${r.c}"></td><td class="v col-var" data-cd="${r.c}"></td></tr>`;
+      h += `<tr class="${cls}" data-c="${r.c}">${lbl}<td class="v" data-cv="${r.c}" data-y="0"></td><td class="v" data-cv="${r.c}" data-y="1"></td><td class="v col-var" data-cp="${r.c}"></td><td class="v col-var" data-cd="${r.c}"></td>${catTd}</tr>`;
     } else {
       const auto1 = r.y1auto ? `<td class="v" data-cv="cxini1" data-y="1"></td>` : null;
       const ph = r.ph ? ` data-ph="${r.ph}"` : '';
       h += `<tr class="${cls}">${lbl}<td><input class="num" inputmode="decimal" placeholder="0"${ph} data-k="${r.k}" data-y="0" aria-label="${esc(r.l)} ${'ano anterior'}"></td>` +
         (auto1 || `<td><input class="num" inputmode="decimal" placeholder="0"${ph} data-k="${r.k}" data-y="1" aria-label="${esc(r.l)} ${'ano atual'}"></td>`) +
-        `<td class="v col-var" data-vp="${r.k}"></td><td class="v col-var" data-vd="${r.k}"></td></tr>`;
+        `<td class="v col-var" data-vp="${r.k}"></td><td class="v col-var" data-vd="${r.k}"></td>${catTd}</tr>`;
     }
   });
   h += '</tbody></table></div>';
